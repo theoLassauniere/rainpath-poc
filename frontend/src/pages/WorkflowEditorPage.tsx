@@ -9,6 +9,7 @@ import NodePalette from '../components/editor/NodePalette'
 import WorkflowCanvas from '../components/editor/WorkflowCanvas'
 import PropertiesPanel from '../components/editor/PropertiesPanel'
 import StatusBadge from '../components/StatusBadge'
+import ConfirmModal from '../components/ConfirmModal'
 
 // Inner component — must be inside ReactFlowProvider to use useReactFlow
 function EditorLayout() {
@@ -22,6 +23,7 @@ function EditorLayout() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState<'saved' | 'error' | null>(null)
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false)
 
   useEffect(() => {
     reset()
@@ -61,6 +63,14 @@ function EditorLayout() {
     }
   }
 
+  function handleBack() {
+    if (isDirty) {
+      setShowLeaveConfirm(true)
+    } else {
+      navigate('/')
+    }
+  }
+
   const selectedNode = nodes.find((n) => n.selected) as WorkflowNode | undefined
 
   if (loading) {
@@ -76,7 +86,7 @@ function EditorLayout() {
       {/* Header */}
       <header className="shrink-0 border-b border-gray-200 bg-white px-4 flex items-center gap-3 h-14">
         <button
-          onClick={() => navigate('/')}
+          onClick={handleBack}
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,6 +130,17 @@ function EditorLayout() {
         <WorkflowCanvas onAddNode={handleAddNode} />
         <PropertiesPanel node={selectedNode ?? null} />
       </div>
+
+      <ConfirmModal
+        open={showLeaveConfirm}
+        title="Modifications non sauvegardées"
+        message="Vous avez des modifications en cours. Quitter maintenant les supprimera définitivement."
+        confirmLabel="Quitter sans sauvegarder"
+        cancelLabel="Rester"
+        variant="warning"
+        onConfirm={() => navigate('/')}
+        onCancel={() => setShowLeaveConfirm(false)}
+      />
     </div>
   )
 }
