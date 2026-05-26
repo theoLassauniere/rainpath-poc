@@ -137,7 +137,7 @@ function EditorLayout() {
         message="Vous avez des modifications en cours. Quitter maintenant les supprimera définitivement."
         confirmLabel="Quitter sans sauvegarder"
         cancelLabel="Rester"
-        variant="warning"
+        variant="danger"
         onConfirm={() => navigate('/')}
         onCancel={() => setShowLeaveConfirm(false)}
       />
