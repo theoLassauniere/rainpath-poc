@@ -9,7 +9,7 @@ export class WorkflowsService {
 
   async findAll() {
     return this.prisma.workflow.findMany({
-      select: { id: true, name: true, description: true, createdAt: true, updatedAt: true },
+      select: { id: true, name: true, description: true, status: true, createdAt: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
     });
   }
@@ -47,6 +47,7 @@ export class WorkflowsService {
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.description !== undefined && { description: dto.description }),
+        ...(dto.status !== undefined && { status: dto.status }),
         ...(dto.nodes !== undefined && { nodes: JSON.stringify(dto.nodes) }),
         ...(dto.edges !== undefined && { edges: JSON.stringify(dto.edges) }),
       },

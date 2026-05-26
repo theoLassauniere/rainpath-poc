@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray, ValidateNested, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
+import { WorkflowStatus } from '@prisma/client';
 
 class PositionDto {
   @IsNotEmpty() x: number;
@@ -31,6 +32,8 @@ class WorkflowEdgeDto {
 export class CreateWorkflowDto {
   @ApiProperty() @IsString() @IsNotEmpty() name: string;
   @ApiPropertyOptional() @IsOptional() @IsString() description?: string;
+  @ApiPropertyOptional({ enum: WorkflowStatus, default: WorkflowStatus.DRAFT })
+  @IsOptional() @IsEnum(WorkflowStatus) status?: WorkflowStatus;
   @ApiProperty({ type: [Object] }) @IsArray() @ValidateNested({ each: true }) @Type(() => WorkflowNodeDto) nodes: WorkflowNodeDto[];
   @ApiProperty({ type: [Object] }) @IsArray() @ValidateNested({ each: true }) @Type(() => WorkflowEdgeDto) edges: WorkflowEdgeDto[];
 }

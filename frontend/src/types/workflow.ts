@@ -1,3 +1,5 @@
+export type WorkflowStatus = 'DRAFT' | 'VALIDATED' | 'CANCELLED'
+
 export type NodeType =
   | 'start'
   | 'send_email'
@@ -43,17 +45,19 @@ export interface Workflow {
   id: number
   name: string
   description?: string
+  status: WorkflowStatus
   nodes: WorkflowNode[]
   edges: WorkflowEdge[]
   createdAt: string
   updatedAt: string
 }
 
-export type WorkflowSummary = Pick<Workflow, 'id' | 'name' | 'description' | 'createdAt' | 'updatedAt'>
+export type WorkflowSummary = Pick<Workflow, 'id' | 'name' | 'description' | 'status' | 'createdAt' | 'updatedAt'>
 
 export interface CreateWorkflowDto {
   name: string
   description?: string
+  status?: WorkflowStatus
   nodes: WorkflowNode[]
   edges: WorkflowEdge[]
 }
@@ -61,6 +65,7 @@ export interface CreateWorkflowDto {
 export interface UpdateWorkflowDto {
   name?: string
   description?: string
+  status?: WorkflowStatus
   nodes?: WorkflowNode[]
   edges?: WorkflowEdge[]
 }
