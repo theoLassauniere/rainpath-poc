@@ -9,3 +9,6 @@ Thumbs.db
 
 # Temp
 *.local
+
+# Claude Code
+.claude/
