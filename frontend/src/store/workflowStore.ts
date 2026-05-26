@@ -7,18 +7,26 @@ import {
   type EdgeChange,
   type Connection,
 } from '@xyflow/react'
-import type { WorkflowNode, WorkflowEdge } from '../types/workflow'
+import type { WorkflowNode, WorkflowEdge, WorkflowStatus } from '../types/workflow'
 
 interface WorkflowState {
   workflowId: number | null
   name: string
   description: string
+  status: WorkflowStatus | null
   nodes: WorkflowNode[]
   edges: WorkflowEdge[]
   isDirty: boolean
 
   setMeta: (name: string, description: string) => void
-  setWorkflow: (id: number | null, name: string, description: string, nodes: WorkflowNode[], edges: WorkflowEdge[]) => void
+  setWorkflow: (
+    id: number | null,
+    name: string,
+    description: string,
+    nodes: WorkflowNode[],
+    edges: WorkflowEdge[],
+    status?: WorkflowStatus,
+  ) => void
   onNodesChange: (changes: NodeChange<WorkflowNode>[]) => void
   onEdgesChange: (changes: EdgeChange<WorkflowEdge>[]) => void
   onConnect: (connection: Connection) => void
@@ -32,6 +40,7 @@ const initialState = {
   workflowId: null,
   name: 'Nouveau workflow',
   description: '',
+  status: null as WorkflowStatus | null,
   nodes: [] as WorkflowNode[],
   edges: [] as WorkflowEdge[],
   isDirty: false,
@@ -43,8 +52,8 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
   setMeta: (name, description) =>
     set({ name, description, isDirty: true }),
 
-  setWorkflow: (id, name, description, nodes, edges) =>
-    set({ workflowId: id, name, description, nodes, edges, isDirty: false }),
+  setWorkflow: (id, name, description, nodes, edges, status = 'DRAFT') =>
+    set({ workflowId: id, name, description, status, nodes, edges, isDirty: false }),
 
   onNodesChange: (changes) =>
     set((s) => ({
