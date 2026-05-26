@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEnum, IsObject } from 'class-validator';
 import { Type } from 'class-transformer';
 import { WorkflowStatus } from '@prisma/client';
 
@@ -8,16 +8,13 @@ class PositionDto {
   @IsNotEmpty() y: number;
 }
 
-class NodeDataDto {
-  @IsString() label: string;
-  [key: string]: unknown;
-}
-
 class WorkflowNodeDto {
   @IsString() id: string;
   @IsString() type: string;
   @ValidateNested() @Type(() => PositionDto) position: PositionDto;
-  @ValidateNested() @Type(() => NodeDataDto) data: NodeDataDto;
+  // data est de la donnée brute — on valide uniquement que c'est un objet,
+  // sans transformation class-transformer qui stripperait les champs inconnus
+  @IsObject() data: Record<string, unknown>;
 }
 
 class WorkflowEdgeDto {
