@@ -19,38 +19,31 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
 
   async function handleStatus(status: WorkflowStatus) {
     setLoading(true)
-    try {
-      await onStatusChange(workflow.id, status)
-    } finally {
-      setLoading(false)
-    }
+    try { await onStatusChange(workflow.id, status) }
+    finally { setLoading(false) }
   }
 
   async function handleDelete() {
     setLoading(true)
-    try {
-      await onDelete(workflow.id)
-    } finally {
-      setLoading(false)
-      setConfirmDelete(false)
-    }
+    try { await onDelete(workflow.id) }
+    finally { setLoading(false); setConfirmDelete(false) }
   }
 
   return (
     <div
       onClick={() => navigate(`/workflows/${workflow.id}`)}
-      className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md cursor-pointer"
+      className="group relative flex flex-col rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-sm transition-all hover:shadow-md hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer"
     >
       {/* Header */}
       <div className="mb-3 flex items-start justify-between gap-3">
-        <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-1">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-snug line-clamp-1">
           {workflow.name}
         </h3>
         <StatusBadge status={workflow.status} />
       </div>
 
       {/* Description */}
-      <p className="mb-5 flex-1 text-sm text-gray-400 line-clamp-2 leading-relaxed">
+      <p className="mb-5 flex-1 text-sm text-gray-400 dark:text-gray-500 line-clamp-2 leading-relaxed">
         {workflow.description || <span className="italic">Aucune description</span>}
       </p>
 
@@ -59,7 +52,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
         <div className="flex flex-wrap gap-2">
           <button
             onClick={(e) => { e.stopPropagation(); navigate(`/workflows/${workflow.id}`) }}
-            className="flex-1 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             Ouvrir
           </button>
@@ -76,7 +69,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
               <button
                 onClick={(e) => { e.stopPropagation(); handleStatus('CANCELLED') }}
                 disabled={loading}
-                className="flex-1 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:opacity-50"
+                className="flex-1 rounded-lg bg-red-50 dark:bg-red-950 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-100 dark:hover:bg-red-900 disabled:opacity-50"
               >
                 Annuler
               </button>
@@ -87,22 +80,21 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
             <button
               onClick={(e) => { e.stopPropagation(); setConfirmDelete(true) }}
               disabled={loading}
-              className="flex-1 rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-500 transition hover:bg-red-50 disabled:opacity-50"
+              className="flex-1 rounded-lg border border-red-200 dark:border-red-900 px-3 py-1.5 text-sm font-medium text-red-500 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950 disabled:opacity-50"
             >
               Supprimer
             </button>
           )}
         </div>
       ) : (
-        /* Confirmation suppression */
-        <div className="rounded-xl bg-red-50 p-3" onClick={(e) => e.stopPropagation()}>
-          <p className="mb-3 text-sm text-red-700 font-medium">
+        <div className="rounded-xl bg-red-50 dark:bg-red-950 p-3" onClick={(e) => e.stopPropagation()}>
+          <p className="mb-3 text-sm text-red-700 dark:text-red-300 font-medium">
             Supprimer « {workflow.name} » ? Cette action est irréversible.
           </p>
           <div className="flex gap-2">
             <button
               onClick={(e) => { e.stopPropagation(); setConfirmDelete(false) }}
-              className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+              className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               Annuler
             </button>

@@ -75,19 +75,19 @@ function EditorLayout() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
+      <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
         <div className="w-8 h-8 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       {/* Header */}
-      <header className="shrink-0 border-b border-gray-200 bg-white px-4 flex items-center gap-3 h-14">
+      <header className="shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 flex items-center gap-3 h-14">
         <button
           onClick={handleBack}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition"
+          className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 transition"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -95,9 +95,9 @@ function EditorLayout() {
           Workflows
         </button>
 
-        <span className="text-gray-200">|</span>
+        <span className="text-gray-200 dark:text-gray-700">|</span>
 
-        <h1 className="text-sm font-semibold text-gray-900 truncate max-w-xs">{name}</h1>
+        <h1 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate max-w-xs">{name}</h1>
 
         {status && <StatusBadge status={status} />}
 
@@ -117,7 +117,7 @@ function EditorLayout() {
           <button
             onClick={handleSave}
             disabled={saving || !isDirty}
-            className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-40"
+            className="rounded-lg bg-indigo-600 dark:bg-violet-600 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-700 dark:hover:bg-violet-700 disabled:opacity-40"
           >
             {saving ? 'Sauvegarde...' : 'Sauvegarder'}
           </button>

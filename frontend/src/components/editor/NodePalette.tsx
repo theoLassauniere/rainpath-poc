@@ -12,15 +12,15 @@ export default function NodePalette({ onAddNode }: Props) {
   }
 
   return (
-    <aside className="w-56 shrink-0 border-r border-gray-200 bg-white overflow-y-auto flex flex-col">
+    <aside className="w-56 shrink-0 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto flex flex-col">
       <div className="px-4 pt-4 pb-2">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Nodes</p>
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Nodes</p>
       </div>
 
       <div className="flex flex-col gap-4 px-3 pb-4">
         {PALETTE_GROUPS.map((group) => (
           <div key={group.label}>
-            <p className="mb-1.5 px-1 text-[11px] font-medium text-gray-400">{group.label}</p>
+            <p className="mb-1.5 px-1 text-[11px] font-medium text-gray-400 dark:text-gray-500">{group.label}</p>
             <div className="flex flex-col gap-1">
               {group.items.map((item) => (
                 <div
@@ -28,12 +28,12 @@ export default function NodePalette({ onAddNode }: Props) {
                   draggable
                   onDragStart={(e) => onDragStart(e, item.type)}
                   onClick={() => onAddNode(item.type)}
-                  className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 py-2 cursor-grab active:cursor-grabbing hover:border-gray-300 hover:shadow-sm transition-all select-none"
+                  className="flex items-center gap-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 cursor-grab active:cursor-grabbing hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm transition-all select-none"
                 >
                   <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${item.colorClass}`} />
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-gray-700 truncate">{item.label}</p>
-                    <p className="text-[10px] text-gray-400 truncate">{item.description}</p>
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{item.label}</p>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate">{item.description}</p>
                   </div>
                 </div>
               ))}
@@ -42,8 +42,8 @@ export default function NodePalette({ onAddNode }: Props) {
         ))}
       </div>
 
-      <div className="mt-auto px-4 py-3 border-t border-gray-100">
-        <p className="text-[10px] text-gray-300 text-center">
+      <div className="mt-auto px-4 py-3 border-t border-gray-100 dark:border-gray-800">
+        <p className="text-[10px] text-gray-300 dark:text-gray-600 text-center">
           Clic ou glisser-déposer
         </p>
       </div>

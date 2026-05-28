@@ -7,11 +7,13 @@ import {
   BackgroundVariant,
   useReactFlow,
   type Connection,
+  type ColorMode,
 } from '@xyflow/react'
 import { useWorkflowStore } from '../../store/workflowStore'
 import { nodeTypes } from '../nodes'
 import type { NodeType, WorkflowNode } from '../../types/workflow'
 import { getDefaultData } from '../nodes/nodeConfig'
+import { useTheme } from '../../contexts/ThemeContext'
 
 interface Props {
   onAddNode: (type: NodeType, position?: { x: number; y: number }) => void
@@ -24,6 +26,8 @@ export default function WorkflowCanvas({ onAddNode }: Props) {
   const onEdgesChange = useWorkflowStore((s) => s.onEdgesChange)
   const onConnect = useWorkflowStore((s) => s.onConnect)
   const { screenToFlowPosition } = useReactFlow()
+  const { theme } = useTheme()
+  const colorMode: ColorMode = theme === 'system' ? 'system' : theme
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -51,6 +55,10 @@ export default function WorkflowCanvas({ onAddNode }: Props) {
 
   const selectedNode = nodes.find((n) => n.selected) as WorkflowNode | undefined
 
+  const isDark =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -63,12 +71,18 @@ export default function WorkflowCanvas({ onAddNode }: Props) {
       onDrop={onDrop}
       isValidConnection={isValidConnection}
       deleteKeyCode={['Backspace', 'Delete']}
+      colorMode={colorMode}
       fitView
       fitViewOptions={{ padding: 0.2 }}
-      className="bg-gray-50"
+      className={isDark ? 'bg-gray-950' : 'bg-gray-50'}
     >
-      <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e5e7eb" />
-      <Controls className="!shadow-sm !border !border-gray-200 !rounded-xl overflow-hidden" />
+      <Background
+        variant={BackgroundVariant.Dots}
+        gap={20}
+        size={1}
+        color={isDark ? '#374151' : '#e5e7eb'}
+      />
+      <Controls className="!shadow-sm !border !border-gray-200 dark:!border-gray-700 !rounded-xl overflow-hidden" />
       <MiniMap
         nodeColor={(node) => {
           const type = node.type as NodeType
@@ -79,7 +93,7 @@ export default function WorkflowCanvas({ onAddNode }: Props) {
           }
           return colors[type] ?? '#e5e7eb'
         }}
-        className="!border !border-gray-200 !rounded-xl overflow-hidden !shadow-sm"
+        className="!border !border-gray-200 dark:!border-gray-700 !rounded-xl overflow-hidden !shadow-sm"
       />
     </ReactFlow>
   )
