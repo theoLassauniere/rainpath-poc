@@ -5,6 +5,29 @@ import type { WorkflowSummary, WorkflowStatus } from '../types/workflow'
 import WorkflowCard from '../components/WorkflowCard'
 import CreateWorkflowModal from '../components/CreateWorkflowModal'
 
+const TABS: { status: WorkflowStatus; label: string }[] = [
+  { status: 'DRAFT', label: 'Brouillon' },
+  { status: 'VALIDATED', label: 'Validé' },
+  { status: 'CANCELLED', label: 'Annulé' },
+]
+
+const EMPTY_STATE: Record<WorkflowStatus, { title: string; description: string }> = {
+  DRAFT: {
+    title: 'Aucun brouillon',
+    description: 'Les workflows en cours de création apparaîtront ici.',
+  },
+  VALIDATED: {
+    title: 'Aucun workflow validé',
+    description: 'Les workflows mis en production apparaîtront ici.',
+  },
+  CANCELLED: {
+    title: 'Aucun workflow annulé',
+    description: 'Les workflows désactivés apparaîtront ici.',
+  },
+}
+
+const STORAGE_KEY = 'rainpath.workflowList.tab'
+
 function GearIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,6 +44,16 @@ export default function WorkflowListPage() {
   const [createOpen, setCreateOpen] = useState(false)
   const [createLoading, setCreateLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<WorkflowStatus>(
+    () => (localStorage.getItem(STORAGE_KEY) as WorkflowStatus | null) ?? 'DRAFT'
+  )
+
+  function switchTab(status: WorkflowStatus) {
+    setActiveTab(status)
+    localStorage.setItem(STORAGE_KEY, status)
+  }
+
+  const visibleWorkflows = workflows.filter((w) => w.status === activeTab)
 
   useEffect(() => {
     fetchWorkflows()
@@ -104,11 +137,11 @@ export default function WorkflowListPage() {
       {/* Content */}
       <main className="mx-auto max-w-6xl px-6 py-8">
         {/* Page header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Mes workflows</h1>
             <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
-              {workflows.length} workflow{workflows.length !== 1 ? 's' : ''}
+              {loading ? '…' : `${visibleWorkflows.length} workflow${visibleWorkflows.length !== 1 ? 's' : ''}`}
             </p>
           </div>
           <button
@@ -120,6 +153,36 @@ export default function WorkflowListPage() {
             </svg>
             Nouveau workflow
           </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-6 flex gap-1 border-b border-gray-200 dark:border-gray-800">
+          {TABS.map(({ status, label }) => {
+            const count = workflows.filter((w) => w.status === status).length
+            const isActive = activeTab === status
+            return (
+              <button
+                key={status}
+                onClick={() => switchTab(status)}
+                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                  isActive
+                    ? 'border-indigo-600 dark:border-violet-500 text-indigo-600 dark:text-violet-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+                }`}
+              >
+                {label}
+                {!loading && (
+                  <span className={`inline-flex items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[1.25rem] ${
+                    isActive
+                      ? 'bg-indigo-100 dark:bg-violet-900 text-indigo-700 dark:text-violet-300'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                  }`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         {/* Error */}
@@ -140,29 +203,33 @@ export default function WorkflowListPage() {
               <div key={i} className="h-48 animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-800" />
             ))}
           </div>
-        ) : workflows.length === 0 ? (
-          /* Empty state */
+        ) : visibleWorkflows.length === 0 ? (
+          /* Empty state contextuel */
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-20 text-center">
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 dark:bg-violet-950">
               <svg className="h-7 w-7 text-indigo-400 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3" />
               </svg>
             </div>
-            <h3 className="mb-1 text-base font-semibold text-gray-900 dark:text-gray-100">Aucun workflow</h3>
+            <h3 className="mb-1 text-base font-semibold text-gray-900 dark:text-gray-100">
+              {EMPTY_STATE[activeTab].title}
+            </h3>
             <p className="mb-6 text-sm text-gray-400 dark:text-gray-500">
-              Créez votre premier workflow de relance patient.
+              {EMPTY_STATE[activeTab].description}
             </p>
-            <button
-              onClick={() => setCreateOpen(true)}
-              className="rounded-xl bg-indigo-600 dark:bg-violet-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700 dark:hover:bg-violet-700"
-            >
-              Créer un workflow
-            </button>
+            {activeTab === 'DRAFT' && (
+              <button
+                onClick={() => setCreateOpen(true)}
+                className="rounded-xl bg-indigo-600 dark:bg-violet-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700 dark:hover:bg-violet-700"
+              >
+                Créer un workflow
+              </button>
+            )}
           </div>
         ) : (
           /* Cards grid */
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {workflows.map((workflow) => (
+            {visibleWorkflows.map((workflow) => (
               <WorkflowCard
                 key={workflow.id}
                 workflow={workflow}
