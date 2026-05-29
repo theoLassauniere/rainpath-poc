@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      PORT: 3000
+      DATABASE_URL: file:/data/dev.db
+      SEED_FILE: /seed/example-workflow.json
+    volumes:
+      # Persistance de la base SQLite
+      - backend-data:/data
+      # Volume contenant le workflow d'exemple (lecture seule)
+      - ./seed:/seed:ro
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  backend-data:

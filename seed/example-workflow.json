@@ -1,0 +1,87 @@
+{
+  "name": "Relance de paiement (exemple)",
+  "description": "Scenario illustratif de la spec : J+7 email, bascule WhatsApp/SMS si echec, courrier a J+15, fin a J+30.",
+  "status": "DRAFT",
+  "nodes": [
+    {
+      "id": "n-start",
+      "type": "start",
+      "position": { "x": 0, "y": 380 },
+      "data": { "label": "Examen effectue" }
+    },
+    {
+      "id": "n-delay-7",
+      "type": "delay",
+      "position": { "x": 240, "y": 380 },
+      "data": { "label": "Delai", "days": 7 }
+    },
+    {
+      "id": "n-email",
+      "type": "send_email",
+      "position": { "x": 480, "y": 380 },
+      "data": { "label": "Envoi Email", "messageTemplate": "Bonjour, nous vous invitons a regler le solde de votre examen." }
+    },
+    {
+      "id": "n-cond-email",
+      "type": "condition",
+      "position": { "x": 760, "y": 360 },
+      "data": { "label": "Condition", "conditionType": "action_result", "conditionField": "email_delivered", "conditionOperator": "is_true" }
+    },
+    {
+      "id": "n-cond-whatsapp",
+      "type": "condition",
+      "position": { "x": 1060, "y": 160 },
+      "data": { "label": "Condition", "conditionType": "data_availability", "conditionField": "whatsapp", "conditionOperator": "is_known" }
+    },
+    {
+      "id": "n-whatsapp",
+      "type": "send_whatsapp",
+      "position": { "x": 1380, "y": 40 },
+      "data": { "label": "Envoi WhatsApp", "messageTemplate": "Rappel : le solde de votre examen reste a regler." }
+    },
+    {
+      "id": "n-sms",
+      "type": "send_sms",
+      "position": { "x": 1380, "y": 240 },
+      "data": { "label": "Envoi SMS", "messageTemplate": "Rappel : solde a regler pour votre examen." }
+    },
+    {
+      "id": "n-delay-15",
+      "type": "delay",
+      "position": { "x": 1700, "y": 380 },
+      "data": { "label": "Delai", "days": 8 }
+    },
+    {
+      "id": "n-postal",
+      "type": "send_postal",
+      "position": { "x": 1940, "y": 380 },
+      "data": { "label": "Envoi Courrier", "messageTemplate": "Courrier de relance pour le solde de votre examen." }
+    },
+    {
+      "id": "n-delay-30",
+      "type": "delay",
+      "position": { "x": 2180, "y": 380 },
+      "data": { "label": "Delai", "days": 15 }
+    },
+    {
+      "id": "n-end",
+      "type": "end",
+      "position": { "x": 2420, "y": 380 },
+      "data": { "label": "Fin" }
+    }
+  ],
+  "edges": [
+    { "id": "e-start-delay7", "source": "n-start", "target": "n-delay-7" },
+    { "id": "e-delay7-email", "source": "n-delay-7", "target": "n-email" },
+    { "id": "e-email-cond", "source": "n-email", "target": "n-cond-email" },
+    { "id": "e-cond-delivered", "source": "n-cond-email", "target": "n-delay-15", "sourceHandle": "yes", "label": "Oui" },
+    { "id": "e-cond-failed", "source": "n-cond-email", "target": "n-cond-whatsapp", "sourceHandle": "no", "label": "Non" },
+    { "id": "e-wa-yes", "source": "n-cond-whatsapp", "target": "n-whatsapp", "sourceHandle": "yes", "label": "Oui" },
+    { "id": "e-wa-no", "source": "n-cond-whatsapp", "target": "n-sms", "sourceHandle": "no", "label": "Non" },
+    { "id": "e-wa-delay15", "source": "n-whatsapp", "target": "n-delay-15" },
+    { "id": "e-sms-delay15", "source": "n-sms", "target": "n-delay-15" },
+    { "id": "e-delay15-postal", "source": "n-delay-15", "target": "n-postal" },
+    { "id": "e-postal-delay30", "source": "n-postal", "target": "n-delay-30" },
+    { "id": "e-delay30-end", "source": "n-delay-30", "target": "n-end" }
+  ]
+}
