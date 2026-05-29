@@ -15,7 +15,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   const canValidate = workflow.status === 'DRAFT'
-  const canCancel = workflow.status === 'DRAFT' || workflow.status === 'VALIDATED'
+  const canCancel = workflow.status === 'VALIDATED'
   const canDelete = workflow.status === 'DRAFT' || workflow.status === 'CANCELLED'
 
   async function handleStatus(status: WorkflowStatus) {
