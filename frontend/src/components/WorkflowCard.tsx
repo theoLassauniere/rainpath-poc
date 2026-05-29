@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { WorkflowSummary, WorkflowStatus } from '../types/workflow'
+import { canValidate, canCancel, canDelete } from '../constants/workflowStatus'
 import StatusBadge from './StatusBadge'
 
 interface Props {
@@ -14,9 +15,9 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
   const [loading, setLoading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const canValidate = workflow.status === 'DRAFT'
-  const canCancel = workflow.status === 'VALIDATED'
-  const canDelete = workflow.status === 'DRAFT' || workflow.status === 'CANCELLED'
+  const showValidate = canValidate(workflow.status)
+  const showCancel = canCancel(workflow.status)
+  const showDelete = canDelete(workflow.status)
 
   async function handleStatus(status: WorkflowStatus) {
     setLoading(true)
@@ -58,7 +59,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
             Ouvrir
           </button>
 
-          {canValidate && (
+          {showValidate && (
             <button
               onClick={(e) => { e.stopPropagation(); handleStatus('VALIDATED') }}
               disabled={loading}
@@ -68,7 +69,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
             </button>
           )}
 
-          {canCancel && (
+          {showCancel && (
             <button
               onClick={(e) => { e.stopPropagation(); handleStatus('CANCELLED') }}
               disabled={loading}
@@ -78,7 +79,7 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
             </button>
           )}
 
-          {canDelete && (
+          {showDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); setConfirmDelete(true) }}
               disabled={loading}

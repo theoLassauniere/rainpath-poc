@@ -5,12 +5,11 @@ import type { WorkflowSummary, WorkflowStatus } from '../types/workflow'
 import WorkflowCard from '../components/WorkflowCard'
 import CreateWorkflowModal from '../components/CreateWorkflowModal'
 import { createDefaultNodes } from '../components/nodes/nodeConfig'
+import { STATUS_LABELS, STATUS_ORDER } from '../constants/workflowStatus'
 
-const TABS: { status: WorkflowStatus; label: string }[] = [
-  { status: 'DRAFT', label: 'Brouillon' },
-  { status: 'VALIDATED', label: 'Validé' },
-  { status: 'CANCELLED', label: 'Annulé' },
-]
+const TABS: { status: WorkflowStatus; label: string }[] = STATUS_ORDER.map(
+  (status) => ({ status, label: STATUS_LABELS[status] })
+)
 
 const EMPTY_STATE: Record<WorkflowStatus, { title: string; description: string }> = {
   DRAFT: {
