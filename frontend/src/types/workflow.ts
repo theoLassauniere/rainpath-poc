@@ -30,6 +30,7 @@ export interface WorkflowNode {
   type: NodeType
   position: { x: number; y: number }
   data: NodeData
+  selected?: boolean
 }
 
 export interface WorkflowEdge {

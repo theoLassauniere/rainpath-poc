@@ -11,8 +11,7 @@ import {
 } from '@xyflow/react'
 import { useWorkflowStore } from '../../store/workflowStore'
 import { nodeTypes } from '../nodes'
-import type { NodeType, WorkflowNode } from '../../types/workflow'
-import { getDefaultData } from '../nodes/nodeConfig'
+import type { NodeType, WorkflowEdge } from '../../types/workflow'
 import { useTheme } from '../../contexts/ThemeContext'
 
 interface Props {
@@ -46,14 +45,12 @@ export default function WorkflowCanvas({ onAddNode }: Props) {
   )
 
   const isValidConnection = useCallback(
-    (connection: Connection) => {
+    (connection: Connection | WorkflowEdge) => {
       // Prevent self-loops
       return connection.source !== connection.target
     },
     []
   )
-
-  const selectedNode = nodes.find((n) => n.selected) as WorkflowNode | undefined
 
   const isDark =
     theme === 'dark' ||
