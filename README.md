@@ -15,7 +15,38 @@ Permet à un chef de laboratoire de dessiner, sauvegarder et gérer des séquenc
 
 ---
 
-## Prérequis
+## Lancer avec Docker (le plus simple)
+
+Prérequis : **Docker** + **Docker Compose** (Docker Desktop suffit).
+
+```bash
+docker compose up -d --build
+```
+
+Puis ouvrir **http://localhost:8080**.
+
+L'application est livrée avec un **workflow d'exemple** (le scénario de la spec :
+J+7 email → bascule WhatsApp/SMS si échec → courrier à J+15 → fin à J+30),
+inséré automatiquement au premier démarrage.
+
+| Service    | Base            | Rôle                                                            |
+|------------|-----------------|-----------------------------------------------------------------|
+| `frontend` | `nginx:alpine`  | Sert le build Vite et proxifie `/api/*` vers le backend         |
+| `backend`  | `node:22-alpine`| API NestJS (port 3000 interne) + synchro du schéma Prisma       |
+
+**Volumes :**
+- `backend-data` (volume nommé) → persiste la base SQLite (`/data/dev.db`).
+- `./seed` (monté en lecture seule) → contient `example-workflow.json`. Le backend
+  l'insère **seulement si la base est vide** (seed idempotent, voir `backend/prisma/seed.js`).
+
+```bash
+docker compose down       # stoppe les conteneurs, conserve la base
+docker compose down -v    # + réinitialise la base (réinjecte le workflow d'exemple)
+```
+
+---
+
+## Prérequis (développement local sans Docker)
 
 - **Node.js** >= 20
 - **npm** >= 10
