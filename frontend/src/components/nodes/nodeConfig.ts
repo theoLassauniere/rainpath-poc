@@ -1,4 +1,4 @@
-import type { NodeType, NodeData } from '../../types/workflow'
+import type { NodeType, NodeData, WorkflowNode } from '../../types/workflow'
 
 export interface PaletteItem {
   type: NodeType
@@ -43,6 +43,13 @@ export const PALETTE_GROUPS: { label: string; items: PaletteItem[] }[] = [
 export const PALETTE_CONFIG: Record<NodeType, PaletteItem> = Object.fromEntries(
   PALETTE_GROUPS.flatMap((g) => g.items).map((item) => [item.type, item])
 ) as Record<NodeType, PaletteItem>
+
+export function createDefaultNodes(): WorkflowNode[] {
+  return [
+    { id: crypto.randomUUID(), type: 'start', position: { x: 120, y: 200 }, data: getDefaultData('start') },
+    { id: crypto.randomUUID(), type: 'end',   position: { x: 560, y: 200 }, data: getDefaultData('end') },
+  ]
+}
 
 export function getDefaultData(type: NodeType): NodeData {
   switch (type) {

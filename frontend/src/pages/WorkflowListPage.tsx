@@ -4,6 +4,7 @@ import { workflowsApi } from '../api/workflows'
 import type { WorkflowSummary, WorkflowStatus } from '../types/workflow'
 import WorkflowCard from '../components/WorkflowCard'
 import CreateWorkflowModal from '../components/CreateWorkflowModal'
+import { createDefaultNodes } from '../components/nodes/nodeConfig'
 
 const TABS: { status: WorkflowStatus; label: string }[] = [
   { status: 'DRAFT', label: 'Brouillon' },
@@ -75,7 +76,7 @@ export default function WorkflowListPage() {
   async function handleCreate(name: string, description: string) {
     setCreateLoading(true)
     try {
-      const created = await workflowsApi.create({ name, description, nodes: [], edges: [] })
+      const created = await workflowsApi.create({ name, description, nodes: createDefaultNodes(), edges: [] })
       setCreateOpen(false)
       navigate(`/workflows/${created.id}`)
     } catch {
