@@ -1,5 +1,6 @@
 import { Handle, Position, type NodeProps } from '@xyflow/react'
 import type { NodeData } from '../../types/workflow'
+import NodeIcon from './NodeIcon'
 
 const HANDLE_STYLE: React.CSSProperties = { width: 14, height: 14, zIndex: 50, border: '2.5px solid white' }
 
@@ -21,9 +22,7 @@ export default function DelayNode({ data, selected }: NodeProps) {
       />
 
       <div className="bg-amber-500 px-3 py-2 flex items-center gap-2 text-white rounded-t-[10px]">
-        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <NodeIcon type="delay" />
         <span className="text-xs font-bold tracking-widest uppercase">Délai</span>
       </div>
 
