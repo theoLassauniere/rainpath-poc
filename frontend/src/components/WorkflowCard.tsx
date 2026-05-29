@@ -14,8 +14,9 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
   const [loading, setLoading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const isDraft = workflow.status === 'DRAFT'
-  const canDelete = workflow.status === 'VALIDATED' || workflow.status === 'CANCELLED'
+  const canValidate = workflow.status === 'DRAFT'
+  const canCancel = workflow.status === 'DRAFT' || workflow.status === 'VALIDATED'
+  const canDelete = workflow.status === 'DRAFT' || workflow.status === 'CANCELLED'
 
   async function handleStatus(status: WorkflowStatus) {
     setLoading(true)
@@ -57,23 +58,24 @@ export default function WorkflowCard({ workflow, onStatusChange, onDelete }: Pro
             Ouvrir
           </button>
 
-          {isDraft && (
-            <>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleStatus('VALIDATED') }}
-                disabled={loading}
-                className="flex-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50"
-              >
-                Valider
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleStatus('CANCELLED') }}
-                disabled={loading}
-                className="flex-1 rounded-lg bg-red-50 dark:bg-red-950 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-100 dark:hover:bg-red-900 disabled:opacity-50"
-              >
-                Annuler
-              </button>
-            </>
+          {canValidate && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleStatus('VALIDATED') }}
+              disabled={loading}
+              className="flex-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50"
+            >
+              Valider
+            </button>
+          )}
+
+          {canCancel && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleStatus('CANCELLED') }}
+              disabled={loading}
+              className="flex-1 rounded-lg bg-red-50 dark:bg-red-950 px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-100 dark:hover:bg-red-900 disabled:opacity-50"
+            >
+              Annuler
+            </button>
           )}
 
           {canDelete && (
