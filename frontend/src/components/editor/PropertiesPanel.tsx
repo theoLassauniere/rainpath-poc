@@ -1,5 +1,7 @@
 import { useWorkflowStore } from '../../store/workflowStore'
-import type { WorkflowNode } from '../../types/workflow'
+import type { NodeType, WorkflowNode } from '../../types/workflow'
+import { PALETTE_CONFIG } from '../nodes/nodeConfig'
+import NodeIcon from '../nodes/NodeIcon'
 
 interface Props {
   node: WorkflowNode | null
@@ -49,7 +51,12 @@ export default function PropertiesPanel({ node }: Props) {
     <aside className="w-72 shrink-0 border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto flex flex-col">
       <div className="px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-800">
         <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Propriétés</p>
-        <p className="mt-1 text-sm font-semibold text-gray-800 dark:text-gray-200">{data.label as string}</p>
+        <div className="mt-1.5 flex items-center gap-2">
+          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white ${PALETTE_CONFIG[type as NodeType].colorClass}`}>
+            <NodeIcon type={type as NodeType} className="w-4 h-4" />
+          </span>
+          <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{data.label as string}</p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-5 p-4 flex-1">

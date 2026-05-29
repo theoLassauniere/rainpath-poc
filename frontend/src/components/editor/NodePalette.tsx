@@ -1,5 +1,6 @@
 import type { NodeType } from '../../types/workflow'
 import { PALETTE_GROUPS } from '../nodes/nodeConfig'
+import NodeIcon from '../nodes/NodeIcon'
 
 interface Props {
   onAddNode: (type: NodeType) => void
@@ -30,7 +31,9 @@ export default function NodePalette({ onAddNode }: Props) {
                   onClick={() => onAddNode(item.type)}
                   className="flex items-center gap-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 cursor-grab active:cursor-grabbing hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm transition-all select-none"
                 >
-                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${item.colorClass}`} />
+                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white ${item.colorClass}`}>
+                    <NodeIcon type={item.type} className="w-4 h-4" />
+                  </span>
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{item.label}</p>
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate">{item.description}</p>
