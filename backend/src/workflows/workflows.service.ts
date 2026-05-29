@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWorkflowDto } from './dto/create-workflow.dto';
 import { UpdateWorkflowDto } from './dto/update-workflow.dto';
@@ -60,7 +60,12 @@ export class WorkflowsService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const workflow = await this.findOne(id);
+    if (workflow.status === 'VALIDATED') {
+      throw new ConflictException(
+        'Un workflow validé doit être annulé avant de pouvoir être supprimé',
+      );
+    }
     return this.prisma.workflow.delete({ where: { id } });
   }
 }
