@@ -41,7 +41,12 @@ export class WorkflowsService {
   }
 
   async update(id: number, dto: UpdateWorkflowDto) {
-    await this.findOne(id);
+    const current = await this.findOne(id);
+    if (dto.status === 'CANCELLED' && current.status === 'DRAFT') {
+      throw new ConflictException(
+        'Un workflow en brouillon ne peut pas être annulé',
+      );
+    }
     const workflow = await this.prisma.workflow.update({
       where: { id },
       data: {
